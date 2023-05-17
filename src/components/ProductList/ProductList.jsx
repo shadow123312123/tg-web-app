@@ -48,25 +48,29 @@ const ProductList = () => {
         }
     }, [onSendData])
 
-    const onAdd = (product) => {
-        const alreadyAdded = addedItems.find(item => item.id === product.id);
-        let newItems = [];
+    const onAdd = (food) => {
+        const exist = addedItems.find((x)=> x.id === food.id);
 
-        if(alreadyAdded) {
-            newItems = addedItems.filter(item => item.id !== product.id);
+        if (exist){
+
+            setAddedItems(
+                addedItems.map((x)=>
+                    x.id === food.id ? {...exist, quantity: exist.quantity + 1} : x
+                )
+            );
+
         } else {
-            newItems = [...addedItems, product];
+
+            setAddedItems([...addedItems, {...food, quantity: 1}]);
         }
 
-        setAddedItems(newItems)
-
-        if(newItems.length === 0) {
+        if(addedItems.length === 0) {
             tg.MainButton.hide();
         } else {
             tg.MainButton.show();
             tg.MainButton.enable();
             tg.MainButton.setParams({
-                text: `Купить ${getTotalPrice(newItems)}`
+                text: `Купить ${getTotalPrice(addedItems)}`
             })
         }
     }
